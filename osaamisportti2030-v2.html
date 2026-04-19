@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osaamisportti 2030</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#050505;
+  --em:#10b981;
+  --em15:rgba(16,185,129,0.15);
+  --em08:rgba(16,185,129,0.08);
+  --em25:rgba(16,185,129,0.25);
+  --white:#EBEBEB;
+  --w50:rgba(235,235,235,0.5);
+  --w30:rgba(235,235,235,0.3);
+  --w15:rgba(235,235,235,0.15);
+  --w08:rgba(235,235,235,0.08);
+  --w04:rgba(235,235,235,0.04);
+  --border:rgba(255,255,255,0.1);
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --serif:'Newsreader',serif;
+  --sans:'Space Grotesk',sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--black);color:var(--white);font-family:var(--sans)}
+
+/* ===== SLIDE SYSTEM ===== */
+.deck{position:fixed;inset:0;overflow:hidden}
+.slides-track{display:flex;width:500%;height:100%;transition:transform 0.9s var(--ease)}
+.slide{width:20%;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
+
+/* ===== FIXED NAV ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 6vw;
+  background:rgba(5,5,5,0.75);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:26px;height:26px;background:#fff;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.7s var(--ease);cursor:pointer;flex-shrink:0;
+}
+.logo-mark:hover{transform:rotate(360deg)}
+.logo-mark svg{width:14px;height:14px;flex-shrink:0}
+.logo-text{font-family:var(--sans);font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--white);white-space:nowrap}
+.nav-dots{display:flex;gap:7px;align-items:center}
+.dot{
+  width:6px;height:6px;border-radius:50%;
+  background:transparent;border:1px solid var(--border);
+  cursor:pointer;transition:all 0.3s var(--ease);
+}
+.dot.active{background:var(--em);border-color:var(--em);box-shadow:0 0 8px var(--em)}
+.nav-num{font-size:10px;letter-spacing:0.2em;color:var(--w30);white-space:nowrap}
+
+/* ===== ARROW NAV ===== */
+.arrows{
+  position:fixed;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:200;
+}
+.arr-btn{
+  width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--border);
+  background:rgba(5,5,5,0.6);backdrop-filter:blur(8px);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--white);font-size:16px;
+  transition:all 0.3s var(--ease);
+}
+.arr-btn:hover{border-color:var(--em);color:var(--em);box-shadow:0 0 18px var(--em15)}
+
+/* ===== SLIDE CONTENT AREA ===== */
+/* Slides 2–5 get a standard layout container */
+.slide-body{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:100px 6vw 80px;
+  max-width:100%;
+}
+
+/* ===== REVEAL ANIMATION ===== */
+.r{opacity:0;transform:translateY(24px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
+.r.on{opacity:1;transform:none}
+
+/* ===== TYPOGRAPHY ===== */
+.label{
+  font-family:var(--sans);font-size:10px;letter-spacing:0.25em;
+  text-transform:uppercase;color:var(--em);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.pdot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--em);box-shadow:0 0 6px var(--em);
+  animation:pdot 2s ease-in-out infinite;flex-shrink:0;
+}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:0.4}}
+.divline{width:36px;height:1px;background:var(--em);opacity:0.5;margin-bottom:20px}
+.h1{
+  font-family:var(--serif);font-weight:200;line-height:0.93;
+  letter-spacing:-0.025em;color:var(--white);
+}
+.h1 em{font-style:italic;color:var(--em)}
+.body-text{
+  font-family:var(--sans);font-size:14px;font-weight:300;
+  color:var(--w50);line-height:1.75;
+}
+
+/* ===== SLIDE 1 – HERO (tubes bg) ===== */
+#s1{background:var(--black)}
+#tubes-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:block;
+}
+.hero-content{
+  position:absolute;inset:0;z-index:10;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:0 5vw;
+  pointer-events:none;
+}
+.hero-kicker{
+  font-family:var(--sans);font-size:10px;letter-spacing:0.3em;
+  text-transform:uppercase;color:var(--em);margin-bottom:28px;
+  display:flex;align-items:center;gap:8px;
+}
+.hero-title{
+  font-family:var(--serif);font-size:clamp(56px,8vw,108px);
+  font-weight:200;line-height:0.9;letter-spacing:-0.03em;
+  color:#fff;text-shadow:0 0 80px rgba(0,0,0,0.9);
+  margin-bottom:20px;
+}
+.hero-title em{font-style:italic;color:var(--em)}
+.hero-sub{
+  font-family:var(--sans);font-size:15px;font-weight:300;
+  color:rgba(255,255,255,0.65);max-width:540px;line-height:1.65;
+  margin-bottom:48px;text-shadow:0 2px 20px rgba(0,0,0,0.8);
+}
+.hero-btns{
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  pointer-events:all;
+}
+.btn-p{
+  padding:13px 30px;border-radius:100px;
+  background:#fff;color:#050505;
+  font-family:var(--sans);font-size:13px;font-weight:500;
+  letter-spacing:0.04em;border:none;cursor:pointer;
+  transition:all 0.3s var(--ease);
+}
+.btn-p:hover{box-shadow:0 0 28px rgba(16,185,129,0.5);transform:translateY(-1px)}
+.btn-g{
+  padding:13px 30px;border-radius:100px;
+  background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);
+  color:#fff;font-family:var(--sans);font-size:13px;
+  font-weight:400;letter-spacing:0.04em;
+  border:1px solid rgba(255,255,255,0.2);cursor:pointer;
+  transition:all 0.3s var(--ease);
+}
+.btn-g:hover{border-color:var(--em);color:var(--em)}
+.click-hint{
+  position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.3);display:flex;flex-direction:column;
+  align-items:center;gap:6px;pointer-events:none;
+  animation:hint 2.5s ease-in-out infinite;z-index:10;
+}
+@keyframes hint{0%,100%{opacity:0.3}50%{opacity:0.7}}
+.hint-arrow{font-size:14px}
+
+/* ===== SLIDE 2 – ONGELMA ===== */
+#s2 .slide-body{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+}
+.stat-stack{display:flex;flex-direction:column;gap:0}
+.stat-item{
+  padding:20px 0;
+  border-top:1px solid var(--border);
+}
+.stat-item:last-child{border-bottom:1px solid var(--border)}
+.stat-num{
+  font-family:var(--serif);font-size:52px;
+  font-weight:200;color:var(--em);line-height:1;
+  margin-bottom:6px;
+}
+.stat-lbl{
+  font-family:var(--sans);font-size:13px;
+  font-weight:300;color:var(--w50);line-height:1.5;
+}
+.stat-src{
+  font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+  color:rgba(235,235,235,0.2);margin-top:4px;
+}
+
+/* ===== SLIDE 3 – RATKAISU ===== */
+#s3 .slide-body{gap:0;justify-content:center;padding-top:110px;padding-bottom:60px}
+.solution-top{margin-bottom:32px}
+.horizons{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:14px;margin-bottom:28px;
+}
+.h-card{
+  border:1px solid var(--border);border-radius:18px;
+  background:var(--w04);padding:22px;
+  transition:border-color 0.3s var(--ease),background 0.3s var(--ease);
+}
+.h-card:hover{border-color:var(--em25);background:var(--em08)}
+.h-label{
+  font-family:var(--sans);font-size:9px;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--em);margin-bottom:6px;
+}
+.h-title{
+  font-family:var(--serif);font-size:18px;
+  font-weight:300;color:var(--white);margin-bottom:6px;
+}
+.h-desc{font-family:var(--sans);font-size:12px;color:var(--w50);line-height:1.6}
+
+.agents-wrap{
+  border:1px solid var(--border);border-radius:18px;
+  background:var(--w04);padding:20px 24px;
+}
+.agents-title{
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--w30);margin-bottom:14px;
+}
+.agents-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.a-pill{
+  padding:7px 10px;border-radius:100px;
+  border:1px solid var(--border);background:transparent;
+  font-family:var(--sans);font-size:9px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--w50);text-align:center;
+  transition:all 0.25s var(--ease);cursor:default;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.a-pill:hover{border-color:var(--em);color:var(--em);background:var(--em08)}
+
+/* ===== SLIDE 4 – VERTAILU ===== */
+#s4 .slide-body{padding-top:110px;padding-bottom:80px;justify-content:center}
+.table-wrap{
+  border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;margin-top:28px;
+}
+table{width:100%;border-collapse:collapse}
+thead th{
+  font-family:var(--sans);font-size:9px;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--w30);
+  padding:14px 20px;text-align:left;
+  background:var(--w04);
+  border-bottom:1px solid var(--border);
+}
+tbody td{
+  font-family:var(--sans);font-size:13px;
+  padding:14px 20px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  color:var(--white);vertical-align:middle;
+  line-height:1.4;
+}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--w04)}
+.td-muted{color:var(--w50)}
+.td-em{color:var(--em);font-weight:500}
+.chk{color:var(--em);margin-right:4px;animation:chk 2s ease-in-out infinite}
+@keyframes chk{0%,100%{opacity:1}50%{opacity:0.55}}
+.col-feature{width:32%;color:var(--w50)!important}
+.col-old{width:30%}
+.col-new{width:38%}
+.table-note{
+  font-size:10px;color:rgba(235,235,235,0.2);
+  margin-top:10px;letter-spacing:0.05em;
+}
+
+/* ===== SLIDE 5 – CTA ===== */
+#s5{background:var(--black)}
+#s5 .slide-body{
+  align-items:center;text-align:center;justify-content:center;gap:0;
+}
+.cta-title{
+  font-family:var(--serif);font-size:clamp(48px,6vw,84px);
+  font-weight:200;line-height:0.9;letter-spacing:-0.03em;
+  background:linear-gradient(90deg,#fff 0%,var(--em) 50%,#fff 100%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gshift 4s linear infinite;
+  margin-bottom:28px;
+}
+@keyframes gshift{0%{background-position:0}50%{background-position:100%}100%{background-position:0}}
+.cta-sub{
+  font-family:var(--sans);font-size:14px;font-weight:300;
+  color:var(--w50);max-width:460px;line-height:1.7;margin-bottom:40px;
+}
+.cta-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:60px}
+.btn-pulse{
+  padding:15px 36px;border-radius:100px;
+  background:var(--em);color:#050505;
+  font-family:var(--sans);font-size:13px;font-weight:600;
+  letter-spacing:0.05em;border:none;cursor:pointer;
+  animation:bpulse 2.5s ease-in-out infinite;
+  transition:transform 0.3s var(--ease);
+}
+@keyframes bpulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.6)}50%{box-shadow:0 0 0 18px rgba(16,185,129,0)}}
+.btn-pulse:hover{transform:scale(1.03)}
+.cta-footer{
+  font-size:9px;letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(235,235,235,0.18);margin-top:0;
+}
+
+/* ===== GLOB BACKGROUNDS (slides 2-5) ===== */
+.glob{
+  position:absolute;border-radius:40% 60% 60% 40%/70% 30% 70% 30%;
+  filter:blur(80px);pointer-events:none;animation:morph 8s ease-in-out infinite alternate;
+}
+.g1{width:350px;height:350px;background:rgba(16,185,129,0.06);top:-80px;right:-60px;animation-delay:0s}
+.g2{width:280px;height:280px;background:rgba(16,185,129,0.04);bottom:-60px;left:-40px;animation-delay:-4s}
+@keyframes morph{
+  0%{border-radius:40% 60% 60% 40%/70% 30% 70% 30%}
+  100%{border-radius:60% 40% 40% 60%/30% 70% 30% 70%}
+}
+
+/* Shimmer border utility */
+.shimmer{
+  position:relative;border:1px solid var(--border);overflow:hidden;
+}
+.shimmer::after{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;
+  background:linear-gradient(90deg,transparent,rgba(16,185,129,0.25),transparent);
+  background-size:200% 100%;
+  animation:shim 4s linear infinite;pointer-events:none;
+}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-mark" onclick="goTo(0)">
+      <svg viewBox="0 0 14 14" fill="none">
+        <rect x="1" y="1" width="5" height="5" rx="1" fill="#050505"/>
+        <rect x="8" y="1" width="5" height="5" rx="1" fill="#050505"/>
+        <rect x="1" y="8" width="5" height="5" rx="1" fill="#050505"/>
+        <rect x="8" y="8" width="5" height="5" rx="1" fill="#10b981"/>
+      </svg>
+    </div>
+    <span class="logo-text">Osaamisportti 2030</span>
+  </div>
+  <div class="nav-dots" id="ndots"></div>
+  <div class="nav-num" id="nnum">01 / 05</div>
+</nav>
+
+<!-- DECK -->
+<div class="deck">
+  <div class="slides-track" id="track">
+
+    <!-- ===== SLIDE 1: HERO ===== -->
+    <div class="slide" id="s1">
+      <canvas id="tubes-canvas"></canvas>
+      <div class="hero-content">
+        <div class="hero-kicker r">
+          <span class="pdot"></span>
+          Hanke-esite · Luottamuksellinen
+        </div>
+        <h1 class="hero-title r" style="transition-delay:0.08s">
+          Ohjaa ihmiset<br>oikeille <em>markkinoille</em><br>ennen muutosta
+        </h1>
+        <p class="hero-sub r" style="transition-delay:0.16s">
+          Agenttiohjattu järjestelmä, joka mallintaa koko työmarkkinan muutoksen ja ohjaa yksilöä systemaattisesti kohti tulevaisuuskestävää urapolkua.
+        </p>
+        <div class="hero-btns r" style="transition-delay:0.24s">
+          <button class="btn-p" onclick="goTo(1)">Ongelma</button>
+          <button class="btn-g" onclick="goTo(4)">Yhteenveto</button>
+        </div>
+      </div>
+      <div class="click-hint">
+        <span class="hint-arrow">↓</span>
+        <span>Nuolinäppäimet navigointiin · Klikkaa taustaefektiä väreillä</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 2: ONGELMA ===== -->
+    <div class="slide" id="s2">
+      <div class="glob g1"></div>
+      <div class="glob g2"></div>
+      <div class="slide-body">
+        <!-- Vasen: teksti -->
+        <div>
+          <div class="label r"><span class="pdot"></span>01 · Ongelma</div>
+          <div class="divline r" style="transition-delay:0.05s"></div>
+          <h2 class="h1 r" style="font-size:clamp(38px,4.5vw,62px);margin-bottom:20px;transition-delay:0.1s">
+            Ihmiset ohjautuvat<br><em>liian hitaasti</em><br>oikeille poluille
+          </h2>
+          <p class="body-text r" style="transition-delay:0.18s">
+            Kolme samanaikaista rakenteellista ongelmaa. Nykyiset palvelut vastaavat kysymykseen, sopiiko henkilö tähän tehtävään tänään. Oikea kysymys on toinen.
+          </p>
+          <div class="r" style="transition-delay:0.25s;margin-top:20px">
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+              <li style="font-size:12px;color:var(--w50);padding-left:14px;position:relative">
+                <span style="position:absolute;left:0;color:var(--em)">—</span>
+                Heikko kohtaanto: osaajia puuttuu joillakin aloilla, toisilla työ vähenee
+              </li>
+              <li style="font-size:12px;color:var(--w50);padding-left:14px;position:relative">
+                <span style="position:absolute;left:0;color:var(--em)">—</span>
+                Ei eksplisiittistä ohjausta kohti haluttua tehtävää
+              </li>
+              <li style="font-size:12px;color:var(--w50);padding-left:14px;position:relative">
+                <span style="position:absolute;left:0;color:var(--em)">—</span>
+                Ei varoitusta hiipuvilta urapoluilta ennen kuin on liian myöhäistä
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Oikea: statistiikka -->
+        <div class="stat-stack">
+          <div class="stat-item r" style="transition-delay:0.12s">
+            <div class="stat-num"><span class="cu" data-t="22">0</span>%</div>
+            <div class="stat-lbl">nykyisistä työpaikoista muuttuu vuoteen 2030 mennessä</div>
+            <div class="stat-src">World Economic Forum · Future of Jobs 2025</div>
+          </div>
+          <div class="stat-item r" style="transition-delay:0.2s">
+            <div class="stat-num"><span class="cu" data-t="39">0</span>%</div>
+            <div class="stat-lbl">työntekijöiden ydinosaamisesta muuttuu samassa ajanjaksossa</div>
+            <div class="stat-src">World Economic Forum · Future of Jobs 2025</div>
+          </div>
+          <div class="stat-item r" style="transition-delay:0.28s">
+            <div class="stat-num"><span class="cu" data-t="86">0</span>%</div>
+            <div class="stat-lbl">työnantajista odottaa tekoälyn muuttavan liiketoimintaansa vuoteen 2030</div>
+            <div class="stat-src">World Economic Forum · Future of Jobs 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 3: RATKAISU ===== -->
+    <div class="slide" id="s3">
+      <div class="glob g1"></div>
+      <div class="glob g2"></div>
+      <div class="slide-body">
+        <div class="solution-top">
+          <div class="label r"><span class="pdot"></span>02 · Ratkaisu</div>
+          <div class="divline r" style="transition-delay:0.05s"></div>
+          <h2 class="h1 r" style="font-size:clamp(36px,4vw,56px);margin-bottom:12px;transition-delay:0.1s">
+            Kymmenen agentin<br><em>ohjausjärjestelmä</em>
+          </h2>
+          <p class="body-text r" style="transition-delay:0.15s;margin-bottom:0;max-width:580px">
+            Ei yksi yleinen kielimalli. Jokaisella agentilla oma vastuualueensa — yhdessä ne muodostavat aktiivisen työmarkkinaohjaajan.
+          </p>
+        </div>
+
+        <div class="horizons r" style="transition-delay:0.2s">
+          <div class="h-card">
+            <div class="h-label">Heti nyt</div>
+            <div class="h-title">Välitön polku</div>
+            <div class="h-desc">Mihin tehtäviin voit siirtyä nykyisellä osaamisella — ilman lisäkoulutusta</div>
+          </div>
+          <div class="h-card">
+            <div class="h-label">3–6 kuukautta</div>
+            <div class="h-title">Lyhyen tähtäimen polku</div>
+            <div class="h-desc">Osaamisvajeanalyysi ja ensimmäiset konkreettiset näytöt ja koulutukset</div>
+          </div>
+          <div class="h-card">
+            <div class="h-label">12–24 kuukautta</div>
+            <div class="h-title">Strateginen polku</div>
+            <div class="h-desc">Tulevaisuuskestävä suunta — onko valittu ala relevantti viiden vuoden päästä</div>
+          </div>
+        </div>
+
+        <div class="agents-wrap r" style="transition-delay:0.28s">
+          <div class="agents-title">Agenttirakenne</div>
+          <div class="agents-grid">
+            <div class="a-pill">Osaamisagentti</div>
+            <div class="a-pill">Tavoiteagentti</div>
+            <div class="a-pill">Vajeagentti</div>
+            <div class="a-pill">Polkuagentti</div>
+            <div class="a-pill">Ennakointianturi</div>
+            <div class="a-pill">Näyttöagentti</div>
+            <div class="a-pill">Ohjausagentti</div>
+            <div class="a-pill">Selitysagentti</div>
+            <div class="a-pill">Luotettavuusagentti</div>
+            <div class="a-pill">Työnantaja-agentti</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 4: VERTAILU ===== -->
+    <div class="slide" id="s4">
+      <div class="glob g1"></div>
+      <div class="glob g2"></div>
+      <div class="slide-body">
+        <div class="label r"><span class="pdot"></span>03 · Markkina-asema</div>
+        <div class="divline r" style="transition-delay:0.05s"></div>
+        <h2 class="h1 r" style="font-size:clamp(36px,4vw,54px);margin-bottom:10px;transition-delay:0.1s">
+          Miksi tämä on<br>aidosti <em>uusi</em>
+        </h2>
+        <p class="body-text r" style="transition-delay:0.14s;margin-bottom:0">
+          Uutta ei ole tekoälyn käyttö. Uutta on järjestelmä, joka toimii työmarkkinan ennakointiin, osaamisen todentamiseen ja urasiirtymien ohjaukseen erikoistuneena monen agentin ohjausjärjestelmänä.
+        </p>
+        <div class="table-wrap shimmer r" style="transition-delay:0.22s;border-radius:18px">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-feature">Ominaisuus</th>
+                <th class="col-old">Nykyiset palvelut</th>
+                <th class="col-new">Osaamisportti 2030</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-feature td-muted">Lähtökysymys</td>
+                <td class="td-muted">Sopiiko tähän tehtävään tänään?</td>
+                <td class="td-em">Mihin kannattaa tähdätä seuraavaksi?</td>
+              </tr>
+              <tr>
+                <td class="col-feature td-muted">Aikaperspektiivi</td>
+                <td class="td-muted">Nykyhetki</td>
+                <td class="td-em">Nykyhetki + 5 v ennakointia</td>
+              </tr>
+              <tr>
+                <td class="col-feature td-muted">Ohjauksen tapa</td>
+                <td class="td-muted">Reaktiivinen</td>
+                <td class="td-em">Proaktiivinen, jatkuva</td>
+              </tr>
+              <tr>
+                <td class="col-feature td-muted">Tehtävien tulevaisuusrelevanssi</td>
+                <td class="td-muted">— ei arvioida</td>
+                <td><span class="chk">✦</span><span class="td-em">Integroitu ennakointianturi</span></td>
+              </tr>
+              <tr>
+                <td class="col-feature td-muted">EU tekoälysääntely (korkea riski)</td>
+                <td class="td-muted">Jälkikäteen sovitettu</td>
+                <td><span class="chk">✦</span><span class="td-em">Rakennettu alusta alkaen</span></td>
+              </tr>
+              <tr>
+                <td class="col-feature td-muted">Julkinen sektori / vienti</td>
+                <td class="td-muted">Ei skaalautuva malli</td>
+                <td><span class="chk">✦</span><span class="td-em">Pilotoitavissa kansallisesti</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note r" style="transition-delay:0.3s">Taulukko perustuu hankkeen konseptivertailuun. Ei kilpailijakartoitus.</p>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 5: CTA ===== -->
+    <div class="slide" id="s5">
+      <div class="glob g1"></div>
+      <div class="glob g2" style="background:rgba(16,185,129,0.06)"></div>
+      <div class="slide-body">
+        <div class="divline r" style="margin:0 auto 20px"></div>
+        <div class="label r" style="justify-content:center;transition-delay:0.05s">
+          <span class="pdot"></span>Seuraava vaihe
+        </div>
+        <h2 class="cta-title r" style="transition-delay:0.1s">
+          Ei uusi alusta.<br>Uusi logiikka.
+        </h2>
+        <p class="cta-sub r" style="transition-delay:0.18s">
+          Osaamisportti 2030 on työmarkkinan tulevaisuusohjattu käyttöjärjestelmä. Olemme valmiita esittelemään konseptin tarkemmin.
+        </p>
+        <div class="cta-btns r" style="transition-delay:0.25s">
+          <button class="btn-pulse">Pyydä tapaaminen</button>
+          <button class="btn-g" onclick="goTo(0)">← Aloitukseen</button>
+        </div>
+        <div class="r" style="transition-delay:0.32s">
+          <p class="cta-footer">Luottamuksellinen · Novus Victoria</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /track -->
+</div><!-- /deck -->
+
+<!-- ARROWS -->
+<div class="arrows">
+  <button class="arr-btn" onclick="prev()">←</button>
+  <button class="arr-btn" onclick="next()">→</button>
+</div>
+
+<script>
+/* ===== NAVIGATION ===== */
+let cur=0;const tot=5;
+const track=document.getElementById('track');
+const ndots=document.getElementById('ndots');
+const nnum=document.getElementById('nnum');
+
+for(let i=0;i<tot;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  ndots.appendChild(d);
+}
+
+function goTo(n){
+  cur=Math.max(0,Math.min(tot-1,n));
+  track.style.transform='translateX(-'+cur*20+'%)';
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  nnum.textContent=String(cur+1).padStart(2,'0')+' / '+String(tot).padStart(2,'0');
+  setTimeout(()=>reveal(cur),180);
+}
+function next(){goTo(cur+1)}
+function prev(){goTo(cur-1)}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')next();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prev();
+});
+
+/* ===== REVEAL ===== */
+function reveal(n){
+  const s=document.getElementById('s'+(n+1));
+  if(!s)return;
+  s.querySelectorAll('.r').forEach((el,i)=>setTimeout(()=>el.classList.add('on'),i*65));
+  // count-up
+  s.querySelectorAll('.cu').forEach(el=>{
+    const t=parseInt(el.dataset.t);
+    let v=0;const step=Math.max(18,1400/t);
+    el.textContent='0';
+    const tm=setInterval(()=>{v++;el.textContent=v;if(v>=t)clearInterval(tm);},step);
+  });
+}
+reveal(0); // init slide 1
+
+/* ===== TUBES 3D BACKGROUND ===== */
+(async function(){
+  try{
+    const mod=await import('https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js');
+    const TubesCursor=mod.default;
+    const canvas=document.getElementById('tubes-canvas');
+    const app=TubesCursor(canvas,{
+      tubes:{
+        colors:['#10b981','#064e3b','#34d399'],
+        lights:{
+          intensity:180,
+          colors:['#10b981','#059669','#6ee7b7','#047857']
+        }
+      }
+    });
+    // click on canvas randomizes colors in emerald family
+    canvas.addEventListener('click',()=>{
+      const palette=['#10b981','#34d399','#6ee7b7','#059669','#047857','#064e3b','#a7f3d0','#00ff88'];
+      const pick=n=>Array.from({length:n},()=>palette[Math.floor(Math.random()*palette.length)]);
+      app.tubes.setColors(pick(3));
+      app.tubes.setLightsColors(pick(4));
+    });
+  }catch(e){
+    // Fallback: subtle animated gradient if library fails
+    const c=document.getElementById('tubes-canvas');
+    c.style.background='radial-gradient(ellipse at 30% 50%, rgba(16,185,129,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(16,185,129,0.06) 0%, transparent 50%)';
+  }
+})();
+</script>
+</body>
+</html>
